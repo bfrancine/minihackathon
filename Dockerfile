@@ -1,23 +1,17 @@
-# Etapa 1: Build
 FROM node:20 AS build
 
 WORKDIR /app
 
-# Copia solo los archivos necesarios para instalar dependencias
 COPY package.json package-lock.json ./
 RUN npm install
 
-# Copia solo el código fuente necesario
-COPY src ./src
-COPY public ./public
+COPY . .
 
-# Construye la app
 RUN npm run build
 
-# Etapa 2: Servir con nginx
 FROM nginx:alpine
 
-# Copia la carpeta de build generada
+# Cambia la carpeta /app/dist si tu build genera los archivos en otro lado
 COPY --from=build /app/dist /usr/share/nginx/html
 
 EXPOSE 80
