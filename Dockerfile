@@ -12,7 +12,7 @@ COPY . .
 
 RUN composer install --no-dev --optimize-autoloader
 
-RUN chmod -R 755 storage bootstrap/cache
+RUN mkdir -p storage && mkdir -p bootstrap/cache && chmod -R 755 storage bootstrap/cache
 
 EXPOSE 10000
 
