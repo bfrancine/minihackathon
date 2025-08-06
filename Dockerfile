@@ -3,11 +3,11 @@ FROM node:20 AS build
 
 WORKDIR /app
 
-COPY package.json yarn.lock ./
-RUN yarn install
+COPY package.json package-lock.json ./  # Cambié yarn.lock por package-lock.json
+RUN npm install
 
 COPY . .
-RUN yarn build
+RUN npm run build
 
 # Etapa 2: Servidor estático usando nginx
 FROM nginx:alpine
