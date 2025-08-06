@@ -11,7 +11,7 @@ class InicioController extends Controller
         try {
             DB::connection()->getPdo();
             $dbName = DB::connection()->getDatabaseName();
-            $message = "Conexión a la base de datos <strong>$dbName</strong> exitosa";
+            $message = "Muy buen día, la conexión ha sido exitosa.";
             $success = true;
         } catch (\Exception $e) {
             $message = "Error de conexión a la base de datos <br><code>" . $e->getMessage() . "</code>";
