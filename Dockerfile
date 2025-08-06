@@ -1,18 +1,27 @@
-FROM node:20 AS build
+FROM php:8.2-cli
 
-WORKDIR /app
+# Instalar dependencias del sistema
+RUN apt-get update && apt-get install -y \
+    git zip unzip curl libpq-dev \
+    && docker-php-ext-install pdo pdo_pgsql
 
-COPY package.json package-lock.json ./
-RUN npm install
+# Instalar Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Crear directorio de trabajo
+WORKDIR /var/www/html
+
+# Copiar archivos del proyecto
 COPY . .
 
-RUN npm run build
+# Instalar dependencias de PHP
+RUN composer install --no-dev --optimize-autoloader
 
-FROM nginx:alpine
+# Establecer permisos necesarios
+RUN chmod -R 755 storage bootstrap/cache
 
-COPY --from=build /app/dist /usr/share/nginx/html
+# Exponer puerto
+EXPOSE 10000
 
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+# Comando de inicio (reemplaza Pre-Deploy + Start)
+CMD php artisan config:cache && php artisan migrate --force && php artisan serve --host 0.0.0.0 --port 10000
